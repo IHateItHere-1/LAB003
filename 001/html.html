@@ -1,0 +1,95 @@
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="js.js"></script>
+<script src="https://unpkg.com/@reactivex/rxjs@5.3.0/dist/global/Rx.js"></script>
+
+<div class="con">
+    <h1>Very cool notes app</h1>
+    <div class="form">
+        <input type="text" id="text" placeholder="some text">
+        <select id="color">
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+        </select>
+        <button id="btn" onclick="newNote()">Add</button>
+    </div>
+    <div id="notes">
+    </div>
+</div>
+
+<script>
+
+var button = document.querySelector('button');
+
+Rx.Observable.fromEvent(button, 'click')
+	.subscribe(
+  	(value) => console.log(value.target)
+  );
+
+  function showNotes() {
+    const notesContainer = document.getElementById("notes");
+    notesContainer.innerHTML = "";
+    notes.forEach((element, index) => 
+    {
+        const noteElement = document.createElement("div");
+        noteElement.textContent = element.text;
+        noteElement.classList.add("note");
+        noteElement.classList.add(element.color);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.id = "del";
+        deleteButton.textContent = "Remove";
+
+        const EditButton = document.createElement("button");
+        EditButton.textContent = "Edit";  
+        deleteButton.id = "edit";
+
+        noteElement.appendChild(deleteButton);
+        noteElement.appendChild(EditButton);
+        notesContainer.appendChild(noteElement);
+
+        Rx.Observable.fromEvent(deleteButton, 'click')
+        .subscribe(
+            (value) => {removeNote(index);}
+        );
+
+        Rx.Observable.fromEvent(EditButton, 'click')
+        .subscribe(
+            (value) => {EditNote(noteElement,index);}
+        );
+    });
+    
+    function EditNote(item, index) 
+    {
+        const editbox = document.createElement("input");
+        editbox.value = notes[index].text;  
+        console.log(notes[index].text)
+
+        const update = document.createElement("button");
+        update.textContent = "apply";  
+        update.id = "edit"
+
+        const can = document.createElement("button");
+        can.textContent = "exit";  
+        can.id = "edit"
+
+        item.appendChild(editbox);
+        item.appendChild(update);
+        item.appendChild(can);	
+
+        Rx.Observable.fromEvent(can, 'click')
+        .subscribe(
+            (value) => {CanEditNote(item);}
+        );
+
+        Rx.Observable.fromEvent(update, 'click')
+        .subscribe(
+            (value) => {
+                ConfEditNote(item, index );
+            }
+        );
+    }
+
+}
+</script>

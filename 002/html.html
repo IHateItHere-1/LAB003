@@ -1,0 +1,77 @@
+<div>
+
+        <input id="H" type="number" placeholder="h" value="">
+        <input id="M" type="number" placeholder="m" value="">
+        <input id="S" type="number" placeholder="s" class="s" value="">
+        <button onclick="start()"> start </button>
+
+</div>
+
+  <table id="timer">
+    <tr>
+        <th>
+            <div id="hours">00</div>
+        </th>
+        <th>
+            <div id="hours2">:</div>
+        </th>
+        <th>
+            <div id="minutes">00</div>
+        </th>
+        <th>            
+            <div id="minutes2">:</div>
+        </th>
+        <th>
+            <div id="seconds">00</div>       
+        </th>
+    </tr>
+  </table>
+
+  <script src="https://unpkg.com/@reactivex/rxjs@5.3.0/dist/global/Rx.js"></script>
+  <script>
+    function start()
+    {
+        document.getElementById('hours').hidden = false
+        document.getElementById('minutes').hidden = false
+
+        const H = document.getElementById('H').value*60*60;
+        const M = document.getElementById('M').value*60;
+        const S = document.getElementById('S').value;
+
+        console.log(H + " : " +M+ " : " +S) 
+        // i hate it here
+        const countdownDuration = Number(H)+Number(M)+Number(S); 
+
+        console.log(countdownDuration)
+
+        const countdown = Rx.Observable
+            .timer(1000, 1000).map((value) => countdownDuration - value - 1)
+            .takeWhile((value) => value >= 0);
+
+
+        countdown.subscribe((timeRemaining) => {
+            
+        const hours = Math.floor(timeRemaining / 3600);
+        const minutes = Math.floor((timeRemaining % 3600) / 60);
+        const seconds = timeRemaining % 60;
+            
+        if(hours < 1)
+        {
+            document.getElementById('hours').hidden = true
+            document.getElementById('hours2').hidden = true
+        }
+        if(minutes < 1)
+        {
+            document.getElementById('minutes').hidden = true
+            document.getElementById('minutes2').hidden = true
+        }
+        
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        });
+    }
+  </script>
+
+</body>
+</html>
